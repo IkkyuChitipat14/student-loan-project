@@ -1,0 +1,108 @@
+services:
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "${VUE_APP_API_PORT:-1080}:${VUE_APP_API_PORT:-1080}"
+#    env_file:
+#      - ./frontend/.env
+#    volumes:
+#      - ./frontend:/app
+#    depends_on:
+#      - backend
+#    expose:
+#      - "80"
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-8020}:${BACKEND_PORT:-8020}"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+      - loan_files:/app/uploads/loan_files
+    depends_on:
+      - mysql
+
+  mysql:
+    restart: unless-stopped
+    image: mysql:latest
+    ports:
+      - "8030:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-Student_loan}
+      - MYSQL_USER=${MYSQL_USER:-myuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-mypassword}
+    command: --default-time-zone='Asia/Bangkok'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql_backup:
+    image: fradelg/mysql-cron-backup
+    container_name: mysql_backup
+    restart: always
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=${MYSQL_USER:-myuser}
+      - MYSQL_PASS=${MYSQL_PASSWORD:-mypassword}
+      - MYSQL_DB=${MYSQL_DATABASE:-Student_loan}
+      - CRON_TIME=0 3 * * *
+      - TZ=Asia/Bangkok
+    volumes:
+      - ./backups:/backup
+    depends_on:
+      - mysql
+
+  phpmyadmin:
+    restart: unless-stopped
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8040:80"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
+
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: mynginx_studenLoan
+    ports:
+      - "8010:8010"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  loan_files:
