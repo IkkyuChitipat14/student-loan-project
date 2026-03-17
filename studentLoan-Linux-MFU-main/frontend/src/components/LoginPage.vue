@@ -1,42 +1,34 @@
 <template>
-  <AlertBox ref="alertBox" />
-  <div class="vh-100 img-background">
-    <div
-      class="d-flex flex-column justify-content-center align-items-center vh-100"
-    >
-      <!-- Login Box -->
-      <div
-        class="bg-white bg-opacity-75 my-auto rounded-4 p-5 shadow m-5 text-center"
-        style="max-width: 500px;"
-      >
-        <div>
-          <img src="../assets/mfu_icon.png" alt="mfu_icon" width="30px" />
-          <p class="Noto">มหาวิทยาลัยแม่ฟ้าหลวง</p>
-        </div>
-        <h3 class="mt-5 Noto">
+  <div>
+    <AlertBox ref="alertBox" />
+    <div class="vh-100 img-background">
+      <div class="d-flex flex-column justify-content-center align-items-center vh-100">
+        <!-- Login Box -->
+        <div class="bg-white bg-opacity-75 my-auto rounded-4 p-5 shadow m-5 text-center" style="max-width: 500px;">
+          <div>
+            <img src="../assets/mfu_icon.png" alt="mfu_icon" width="30px" />
+            <p class="Noto">มหาวิทยาลัยแม่ฟ้าหลวง</p>
+          </div>
+          <h3 class="mt-5 Noto">
             ระบบส่งแบบคำขอกู้ยืมเงินกองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)
-        </h3>
-        <div>
-          <div
-            class="row g-2 bg-light bg-opacity-75 rounded-3 shadow text-center p-3 mt-2"
-          >
-            <div class="col-12 col-md-6">
-              <button class="Noto btn btn-outline-dark w-100" @click="$router.push('/login/user')">
-                <i
-                  class="fa-solid fa-graduation-cap"
-                  style="font-size: 50px"
-                ></i>
-                <p class="mb-0">Student</p>
-                <p class="mb-0">นักศึกษา</p>
-              </button>
-            </div>
+          </h3>
+          <div>
+            <div class="row g-2 bg-light bg-opacity-75 rounded-3 shadow text-center p-3 mt-2">
+              <div class="col-12 col-md-6">
+                <button class="Noto btn btn-outline-dark w-100" @click="$router.push('/login/user')">
+                  <i class="fa-solid fa-graduation-cap" style="font-size: 50px"></i>
+                  <p class="mb-0">Student</p>
+                  <p class="mb-0">นักศึกษา</p>
+                </button>
+              </div>
 
-            <div class="col-12 col-md-6">
-              <button class="Noto btn btn-outline-dark w-100" @click="$router.push('/login/staff')">
-                <i class="fa-solid fa-briefcase" style="font-size: 50px"></i>
-                <p class="mb-0">Admin</p>
-                <p class="mb-0">เจ้าหน้าที่</p>
-              </button>
+              <div class="col-12 col-md-6">
+                <button class="Noto btn btn-outline-dark w-100" @click="$router.push('/login/staff')">
+                  <i class="fa-solid fa-briefcase" style="font-size: 50px"></i>
+                  <p class="mb-0">Admin</p>
+                  <p class="mb-0">เจ้าหน้าที่</p>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -164,16 +156,15 @@ export default {
 /* src/assets/css/fonts.css */
 @font-face {
   font-family: "Noto Sans Thai";
-  src: url("@/assets/fonts/Noto_Sans_Thai/NotoSansThai-VariableFont_wdth,wght.ttf")
-    format("truetype");
+  src: url("@/assets/fonts/Noto_Sans_Thai/NotoSansThai-VariableFont_wdth,wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
+
 .Noto {
   font-family: "Noto Sans Thai", sans-serif;
 }
 
-@media (max-width: 768px) {
-}
+@media (max-width: 768px) {}
 </style>

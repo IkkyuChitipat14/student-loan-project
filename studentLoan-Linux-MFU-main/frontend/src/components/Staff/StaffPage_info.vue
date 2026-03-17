@@ -1,580 +1,544 @@
 <template>
   <div>
-    <AlertBox ref="alertBox" />
-    <NavBar />
-    <!-- UserPage content here -->
-    <div id="floating-box" :class="{ 'floating-box--collapsed': !isExpanded }">
-      <div id="floating-header" @click="toggleFloatingBox">
-        <div class="d-flex justify-content-between align-items-center w-100">
-          <div class="header-label" style="min-width: 100px">
-            <span class="d-none d-md-inline text-black">สถานะการกู้:</span>
-            <i
-              class="fas fa-info-circle d-inline d-md-none"
-              style="color: #964040"
-            ></i>
+    <div>
+      <AlertBox ref="alertBox" />
+      <NavBar />
+      <!-- UserPage content here -->
+      <div id="floating-box" :class="{ 'floating-box--collapsed': !isExpanded }">
+        <div id="floating-header" @click="toggleFloatingBox">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="header-label" style="min-width: 100px">
+              <span class="d-none d-md-inline text-black">สถานะการกู้:</span>
+              <i class="fas fa-info-circle d-inline d-md-none" style="color: #964040"></i>
+            </div>
+            <div class="status-text d-none d-md-inline fw-bold px-2 rounded-2" id="info_loan_status"></div>
+            <i id="toggle-arrow" style="color: #964040" class="fas fa-chevron-down"
+              :class="{ rotated: isExpanded }"></i>
           </div>
-          <div
-            class="status-text d-none d-md-inline fw-bold px-2 rounded-2"
-            id="info_loan_status"
-          ></div>
-          <i
-            id="toggle-arrow"
-            style="color: #964040"
-            class="fas fa-chevron-down"
-            :class="{ rotated: isExpanded }"
-          ></i>
         </div>
+
+        <transition name="fold">
+          <div id="floating-content" v-show="isExpanded">
+            <div class="d-block d-md-none mb-2">
+              <span class="fw-bold">สถานะการกู้:</span>
+              <span id="info_loan_status_mobile"></span>
+            </div>
+            <div>
+              <span class="fw-bold">ดูแลโดย:</span>
+              <div id="Info_managed_by" class="mt-1"></div>
+            </div>
+            <div>
+              <span class="fw-bold">รายละเอียด:</span>
+              <div id="Info_loan_details" class="mt-1"></div>
+            </div>
+          </div>
+        </transition>
       </div>
-
-      <transition name="fold">
-        <div id="floating-content" v-show="isExpanded">
-          <div class="d-block d-md-none mb-2">
-            <span class="fw-bold">สถานะการกู้:</span>
-            <span id="info_loan_status_mobile"></span>
-          </div>
-          <div>
-            <span class="fw-bold">ดูแลโดย:</span>
-            <div id="Info_managed_by" class="mt-1"></div>
-          </div>
-          <div>
-            <span class="fw-bold">รายละเอียด:</span>
-            <div id="Info_loan_details" class="mt-1"></div>
-          </div>
-        </div>
-      </transition>
     </div>
-  </div>
-  <div class="red-circle shadow"></div>
-  <div class="screen-control">
-    <!-- สถานะการกู้ -->
-    <div class="p-3 text-black">
-      <div class="bg-white shadow">
-        <div class="p-2 row">
-          <div class="col">
-            <h5 class="my-auto p-2">ข้อมูลคำขอ</h5>
+    <div class="red-circle shadow"></div>
+    <div class="screen-control">
+      <!-- สถานะการกู้ -->
+      <div class="p-3 text-black">
+        <div class="bg-white shadow">
+          <div class="p-2 row">
+            <div class="col">
+              <h5 class="my-auto p-2">ข้อมูลคำขอ</h5>
+            </div>
+            <div class="col-md my-auto mx-2"></div>
           </div>
-          <div class="col-md my-auto mx-2"></div>
-        </div>
-        <hr
-          style="border: none; height: 2px; background-color: black"
-          class="p-0 m-0"
-        />
+          <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
 
-        <!-- User Info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลผู้กู้ยืมเงิน</p>
-          <div class="p-3 bg-secondary-subtle">
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ชื่อ-นามสกุล</b></p>
-                  <p class="col-12 col-md" id="Info_user_fullname">-</p>
-                </div>
-              </div>
-
-              <div class="col-12 col-md">
-                <div class="row">
-                  <p class="col"><b>อายุ</b></p>
-                  <p class="col-12 col-md" id="Info_user_old">-</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="row"></div>
-
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>เบอร์โทรศัพท์เคลื่อนที่</b></p>
-                  <p class="col-12 col-md" id="Info_user_phoneNumber">-</p>
-                </div>
-              </div>
-
-              <div class="col-12 col-md">
-                <div class="row">
-                  <p class="col"><b>บัตรประชาชน</b></p>
-                  <p class="col-12 col-md" id="Info_user_citizenID">-</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- User's education info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลการศึกษาที่ขอยื่นกู้</p>
-          <div class="bg-secondary-subtle">
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ระดับการศึกษา</b></p>
-                    <p class="col-12 col-md" id="Info_user_lvlStudy">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ปีการศึกษา</b></p>
-                    <p class="col-12 col-md" id="Info_user_yearStudy">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>ภาคเรียน</b></p>
-                    <p class="col-12 col-md" id="Info_user_semesterStudy">-</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>สำนักวิชา</b></p>
-                    <p class="col-12 col-md" id="Info_user_faculty">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>สาขาวิชา</b></p>
-                    <p class="col-12 col-md" id="Info_user_fieldStudy">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md"></div>
-              </div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>รหัสนักศึกษา</b></p>
-                    <p class="col-12 col-md" id="Info_user_studentID">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>GPAX</b></p>
-                    <p class="col-12 col-md" id="Info_user_gpax">-</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>จบการศึกษาระดับ</b></p>
-                    <p class="col-12 col-md" id="Info_user_graduateLvl">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ชั่วโมงจิตสาธารณะ</b></p>
-                    <p class="col-12 col-md" id="Info_Public_Service_Number">
-                      -
-                    </p>
-                  </div>
-                </div>
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <div class="col">เอกสารชั่วโมงจิตสาธารณะ</div>
-                    <div
-                      class="col-12 col-md"
-                      id="Info_Public_Service_File"
-                      v-if="Public_Service_File"
-                    >
-                      <a
-                        :href="getFileUrl(publicFile)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        ><p class="text-primary text-decoration-underline">
-                          คลิ๊กเพื่อดูไฟล์
-                        </p></a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- User's fiance info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลการเงิน</p>
-          <div class="bg-secondary-subtle">
-            <div class="p-3">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ได้รับค่าใช้จ่ายในชีวิตประจำวัน</b></p>
-                    <p class="col-12 col-md" id="Info_dailyFee">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>อาชีพ</b></p>
-                    <p class="col-12 col-md" id="Info_occupation">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>รายได้บาท/ปี</b></p>
-                    <p class="col-12 col-md" id="Info_income">-</p>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="row p-3">
-              <div class="col">
-                <div class="row">
-                  <p class="col">
-                    <b> มีความประสงค์จะขอกู้ยืม<br />เพื่อใช้ในการศึกษา</b>
-                  </p>
-                  <p class="col-12 col-md" id="Info_loanPurpose">-</p>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <hr
-              style="border: none; height: 2px; background-color: black"
-              class="p-0 m-0"
-            />
-
-            <div class="row p-3">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ลักษณะของผู้กู้ยืม</b></p>
-                  <p class="col-12 col-md" id="Info_user_loanType">-</p>
-                </div>
-              </div>
-              <div class="col-12 col-md" id="loanType_checkbox"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- User's father info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลบิดา</p>
-          <div class="p-3 bg-secondary-subtle">
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>สถานะ</b></p>
-                  <p class="col-12 col-md" id="Info_dad_status">-</p>
-                </div>
-              </div>
-
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div class="row" v-show="dad_death_certificate_file">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ใบมรณะบัตรของบิดา</b></p>
-                  <div
-                    class="col-12 col-md"
-                    id="Info_dad_death_certificate_file"
-                  >
-                    <a
-                      :href="getFileUrl(dad_death_certificate_file)"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      v-if="dad_death_certificate_file"
-                      ><p class="text-primary text-decoration-underline">
-                        คลิ๊กเพื่อดูไฟล์
-                      </p></a
-                    >
-                    <p v-else>-</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div class="row" v-show="dad_family_status_certificate_file">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ไฟล์หนังสือรับรองสถานะภาพครอบครัว</b></p>
-                  <div
-                    class="col-12 col-md"
-                    id="Info_dad_family_status_certificate_file"
-                  >
-                    <a
-                      :href="getFileUrl(dad_family_status_certificate_file)"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      v-if="dad_family_status_certificate_file"
-                      ><p class="text-primary text-decoration-underline">
-                        คลิ๊กเพื่อดูไฟล์
-                      </p></a
-                    >
-                    <p v-else>-</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div v-show="show_dad_info">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ชื่อ-นามสกุล </b></p>
-                    <p class="col-12 col-md" id="Info_dad_fullname">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>เลขบัตรประชาชน</b></p>
-                    <p class="col-12 col-md" id="Info_dad_citizenID">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col">
-                      <b>เบอร์โทรศัพท์เคลื่อนที่</b>
-                    </p>
-                    <p class="col-12 col-md" id="Info_dad_phoneNumber">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>อีเมล</b></p>
-                    <p class="col-12 col-md" id="Info_dad_email">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>อาชีพ</b></p>
-                    <p class="col-12 col-md" id="Info_dad_job">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>มีรายได้บาท/ปี</b></p>
-                    <p class="col-12 col-md" id="Info_dad_income">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>เอกสารรับรองรายได้ของบิดา</b></p>
-                    <div class="col-12 col-md" id="Info_dad_file">
-                      <a
-                        :href="getFileUrl(dadFile)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        v-if="dadFile"
-                        ><p class="text-primary text-decoration-underline">
-                          คลิ๊กเพื่อดูไฟล์
-                        </p></a
-                      >
-                      <p v-else>-</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- User's mother info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลมารดา</p>
-          <div class="p-3 bg-secondary-subtle">
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>สถานะ</b></p>
-                  <p class="col-12 col-md" id="Info_mom_status">-</p>
-                </div>
-              </div>
-
-              <div class="col"></div>
-            </div>
-
-            <div class="row" v-show="mom_death_certificate_file">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ใบมรณะบัตรของมารดา</b></p>
-                  <div
-                    class="col-12 col-md"
-                    id="Info_mom_death_certificate_file"
-                  >
-                    <a
-                      :href="getFileUrl(mom_death_certificate_file)"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      v-if="mom_death_certificate_file"
-                      ><p class="text-primary text-decoration-underline">
-                        คลิ๊กเพื่อดูไฟล์
-                      </p></a
-                    >
-                    <p v-else>-</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div class="row" v-show="mom_family_status_certificate_file">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>หนังสือรับรองสถานะภาพครอบครัว</b></p>
-                  <div
-                    class="col-12 col-md"
-                    id="Info_mom_family_status_certificate_file"
-                  >
-                    <a
-                      :href="getFileUrl(mom_family_status_certificate_file)"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      v-if="mom_family_status_certificate_file"
-                      ><p class="text-primary text-decoration-underline">
-                        คลิ๊กเพื่อดูไฟล์
-                      </p></a
-                    >
-                    <p v-else>-</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div v-show="show_mom_info">
+          <!-- User Info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลผู้กู้ยืมเงิน</p>
+            <div class="p-3 bg-secondary-subtle">
               <div class="row">
                 <div class="col">
                   <div class="row">
                     <p class="col"><b>ชื่อ-นามสกุล</b></p>
-                    <p class="col-12 col-md" id="Info_mom_fullname">-</p>
+                    <p class="col-12 col-md" id="Info_user_fullname">-</p>
                   </div>
                 </div>
 
                 <div class="col-12 col-md">
                   <div class="row">
-                    <p class="col"><b>เลขบัตรประชาชน</b></p>
-                    <p class="col-12 col-md" id="Info_mom_citizenID">-</p>
+                    <p class="col"><b>อายุ</b></p>
+                    <p class="col-12 col-md" id="Info_user_old">-</p>
                   </div>
                 </div>
               </div>
 
+              <div class="row"></div>
+
               <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>เบอร์โทรศัพท์เคลื่อนที่</b></p>
+                    <p class="col-12 col-md" id="Info_user_phoneNumber">-</p>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md">
+                  <div class="row">
+                    <p class="col"><b>บัตรประชาชน</b></p>
+                    <p class="col-12 col-md" id="Info_user_citizenID">-</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User's education info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลการศึกษาที่ขอยื่นกู้</p>
+            <div class="bg-secondary-subtle">
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ระดับการศึกษา</b></p>
+                      <p class="col-12 col-md" id="Info_user_lvlStudy">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ปีการศึกษา</b></p>
+                      <p class="col-12 col-md" id="Info_user_yearStudy">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>ภาคเรียน</b></p>
+                      <p class="col-12 col-md" id="Info_user_semesterStudy">-</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>สำนักวิชา</b></p>
+                      <p class="col-12 col-md" id="Info_user_faculty">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>สาขาวิชา</b></p>
+                      <p class="col-12 col-md" id="Info_user_fieldStudy">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md"></div>
+                </div>
+              </div>
+
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>รหัสนักศึกษา</b></p>
+                      <p class="col-12 col-md" id="Info_user_studentID">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>GPAX</b></p>
+                      <p class="col-12 col-md" id="Info_user_gpax">-</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>จบการศึกษาระดับ</b></p>
+                      <p class="col-12 col-md" id="Info_user_graduateLvl">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+              </div>
+
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ชั่วโมงจิตสาธารณะ</b></p>
+                      <p class="col-12 col-md" id="Info_Public_Service_Number">
+                        -
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <div class="col">เอกสารชั่วโมงจิตสาธารณะ</div>
+                      <div class="col-12 col-md" id="Info_Public_Service_File" v-if="Public_Service_File">
+                        <a :href="getFileUrl(publicFile)" target="_blank" rel="noopener noreferrer">
+                          <p class="text-primary text-decoration-underline">
+                            คลิ๊กเพื่อดูไฟล์
+                          </p>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User's fiance info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลการเงิน</p>
+            <div class="bg-secondary-subtle">
+              <div class="p-3">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ได้รับค่าใช้จ่ายในชีวิตประจำวัน</b></p>
+                      <p class="col-12 col-md" id="Info_dailyFee">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>อาชีพ</b></p>
+                      <p class="col-12 col-md" id="Info_occupation">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>รายได้บาท/ปี</b></p>
+                      <p class="col-12 col-md" id="Info_income">-</p>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+              </div>
+
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="row p-3">
                 <div class="col">
                   <div class="row">
                     <p class="col">
-                      <b>เบอร์โทรศัพท์เคลื่อนที่ </b>
+                      <b> มีความประสงค์จะขอกู้ยืม<br />เพื่อใช้ในการศึกษา</b>
                     </p>
-                    <p class="col-12 col-md" id="Info_mom_phoneNumber">-</p>
+                    <p class="col-12 col-md" id="Info_loanPurpose">-</p>
                   </div>
                 </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>อีเมล</b></p>
-                    <p class="col-12 col-md" id="Info_mom_email">-</p>
-                  </div>
-                </div>
+                <div class="col-12 col-md"></div>
               </div>
 
+              <hr style="border: none; height: 2px; background-color: black" class="p-0 m-0" />
+
+              <div class="row p-3">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>ลักษณะของผู้กู้ยืม</b></p>
+                    <p class="col-12 col-md" id="Info_user_loanType">-</p>
+                  </div>
+                </div>
+                <div class="col-12 col-md" id="loanType_checkbox"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User's father info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลบิดา</p>
+            <div class="p-3 bg-secondary-subtle">
               <div class="row">
                 <div class="col">
                   <div class="row">
-                    <p class="col"><b>อาชีพ</b></p>
-                    <p class="col-12 col-md" id="Info_mom_job">-</p>
+                    <p class="col"><b>สถานะ</b></p>
+                    <p class="col-12 col-md" id="Info_dad_status">-</p>
                   </div>
                 </div>
 
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>มีรายได้บาท/ปี</b></p>
-                    <p class="col-12 col-md" id="Info_mom_income">-</p>
-                  </div>
-                </div>
+                <div class="col-12 col-md"></div>
               </div>
 
-              <div class="row">
+              <div class="row" v-show="dad_death_certificate_file">
                 <div class="col">
                   <div class="row">
-                    <p class="col"><b>เอกสารรับรองรายได้ของมารดา</b></p>
-                    <div class="col-12 col-md" id="Info_mom_file">
-                      <a
-                        :href="getFileUrl(momFile)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        v-if="momFile"
-                        ><p class="text-primary text-decoration-underline">
+                    <p class="col"><b>ใบมรณะบัตรของบิดา</b></p>
+                    <div class="col-12 col-md" id="Info_dad_death_certificate_file">
+                      <a :href="getFileUrl(dad_death_certificate_file)" target="_blank" rel="noopener noreferrer"
+                        v-if="dad_death_certificate_file">
+                        <p class="text-primary text-decoration-underline">
                           คลิ๊กเพื่อดูไฟล์
-                        </p></a
-                      >
+                        </p>
+                      </a>
                       <p v-else>-</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md"></div>
+              </div>
+
+              <div class="row" v-show="dad_family_status_certificate_file">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>ไฟล์หนังสือรับรองสถานะภาพครอบครัว</b></p>
+                    <div class="col-12 col-md" id="Info_dad_family_status_certificate_file">
+                      <a :href="getFileUrl(dad_family_status_certificate_file)" target="_blank"
+                        rel="noopener noreferrer" v-if="dad_family_status_certificate_file">
+                        <p class="text-primary text-decoration-underline">
+                          คลิ๊กเพื่อดูไฟล์
+                        </p>
+                      </a>
+                      <p v-else>-</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md"></div>
+              </div>
+
+              <div v-show="show_dad_info">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ชื่อ-นามสกุล </b></p>
+                      <p class="col-12 col-md" id="Info_dad_fullname">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>เลขบัตรประชาชน</b></p>
+                      <p class="col-12 col-md" id="Info_dad_citizenID">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col">
+                        <b>เบอร์โทรศัพท์เคลื่อนที่</b>
+                      </p>
+                      <p class="col-12 col-md" id="Info_dad_phoneNumber">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>อีเมล</b></p>
+                      <p class="col-12 col-md" id="Info_dad_email">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>อาชีพ</b></p>
+                      <p class="col-12 col-md" id="Info_dad_job">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>มีรายได้บาท/ปี</b></p>
+                      <p class="col-12 col-md" id="Info_dad_income">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>เอกสารรับรองรายได้ของบิดา</b></p>
+                      <div class="col-12 col-md" id="Info_dad_file">
+                        <a :href="getFileUrl(dadFile)" target="_blank" rel="noopener noreferrer" v-if="dadFile">
+                          <p class="text-primary text-decoration-underline">
+                            คลิ๊กเพื่อดูไฟล์
+                          </p>
+                        </a>
+                        <p v-else>-</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User's mother info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลมารดา</p>
+            <div class="p-3 bg-secondary-subtle">
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>สถานะ</b></p>
+                    <p class="col-12 col-md" id="Info_mom_status">-</p>
+                  </div>
+                </div>
+
+                <div class="col"></div>
+              </div>
+
+              <div class="row" v-show="mom_death_certificate_file">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>ใบมรณะบัตรของมารดา</b></p>
+                    <div class="col-12 col-md" id="Info_mom_death_certificate_file">
+                      <a :href="getFileUrl(mom_death_certificate_file)" target="_blank" rel="noopener noreferrer"
+                        v-if="mom_death_certificate_file">
+                        <p class="text-primary text-decoration-underline">
+                          คลิ๊กเพื่อดูไฟล์
+                        </p>
+                      </a>
+                      <p v-else>-</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md"></div>
+              </div>
+
+              <div class="row" v-show="mom_family_status_certificate_file">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>หนังสือรับรองสถานะภาพครอบครัว</b></p>
+                    <div class="col-12 col-md" id="Info_mom_family_status_certificate_file">
+                      <a :href="getFileUrl(mom_family_status_certificate_file)" target="_blank"
+                        rel="noopener noreferrer" v-if="mom_family_status_certificate_file">
+                        <p class="text-primary text-decoration-underline">
+                          คลิ๊กเพื่อดูไฟล์
+                        </p>
+                      </a>
+                      <p v-else>-</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md"></div>
+              </div>
+
+              <div v-show="show_mom_info">
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ชื่อ-นามสกุล</b></p>
+                      <p class="col-12 col-md" id="Info_mom_fullname">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>เลขบัตรประชาชน</b></p>
+                      <p class="col-12 col-md" id="Info_mom_citizenID">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col">
+                        <b>เบอร์โทรศัพท์เคลื่อนที่ </b>
+                      </p>
+                      <p class="col-12 col-md" id="Info_mom_phoneNumber">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>อีเมล</b></p>
+                      <p class="col-12 col-md" id="Info_mom_email">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>อาชีพ</b></p>
+                      <p class="col-12 col-md" id="Info_mom_job">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>มีรายได้บาท/ปี</b></p>
+                      <p class="col-12 col-md" id="Info_mom_income">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>เอกสารรับรองรายได้ของมารดา</b></p>
+                      <div class="col-12 col-md" id="Info_mom_file">
+                        <a :href="getFileUrl(momFile)" target="_blank" rel="noopener noreferrer" v-if="momFile">
+                          <p class="text-primary text-decoration-underline">
+                            คลิ๊กเพื่อดูไฟล์
+                          </p>
+                        </a>
+                        <p v-else>-</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- dad mom mariage info -->
+          <div class="p-3">
+            <p class="text-secondary">สถานภาพสมรสของบิดา-มารดา</p>
+            <div class="p-3 bg-secondary-subtle">
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>สถานะ</b></p>
+                    <p class="col-12 col-md" id="Info_mariage_status">-</p>
+                  </div>
+                </div>
+                <div class="col"></div>
+              </div>
+
+              <div class="row" v-if="maritalFile">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>เอกสาร</b></p>
+                    <div class="col-12 col-md" id="Info_Marital_status_of_parents_file">
+                      <a :href="getFileUrl(maritalFile)" target="_blank" rel="noopener noreferrer">
+                        <p class="text-primary text-decoration-underline">
+                          คลิ๊กเพื่อดูไฟล์
+                        </p>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -582,167 +546,122 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- dad mom mariage info -->
-        <div class="p-3">
-          <p class="text-secondary">สถานภาพสมรสของบิดา-มารดา</p>
-          <div class="p-3 bg-secondary-subtle">
-            <div class="row">
-              <div class="col">
+          <!-- User's rightful guardian info -->
+          <div class="p-3">
+            <p class="text-secondary">ข้อมูลผู้แทนโดยชอบธรรม/ผู้ปกครอง</p>
+            <div class="p-3 bg-secondary-subtle">
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <p class="col"><b>ผู้แทนโดยชอบธรรม/ผู้ปกครอง</b></p>
+                    <p class="col-12 col-md" id="Info_rightful_guardian">-</p>
+                  </div>
+                </div>
+                <div class="col-12 col-md"></div>
+              </div>
+
+              <div v-show="show_other_info">
                 <div class="row">
-                  <p class="col"><b>สถานะ</b></p>
-                  <p class="col-12 col-md" id="Info_mariage_status">-</p>
-                </div>
-              </div>
-              <div class="col"></div>
-            </div>
-
-            <div class="row" v-if="maritalFile">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>เอกสาร</b></p>
-                  <div
-                    class="col-12 col-md"
-                    id="Info_Marital_status_of_parents_file"
-                  >
-                    <a
-                      :href="getFileUrl(maritalFile)"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      ><p class="text-primary text-decoration-underline">
-                        คลิ๊กเพื่อดูไฟล์
-                      </p></a
-                    >
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>ชื่อ-นามสกุล</b></p>
+                      <p class="col-12 col-md" id="Info_other_fullname">-</p>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-          </div>
-        </div>
 
-        <!-- User's rightful guardian info -->
-        <div class="p-3">
-          <p class="text-secondary">ข้อมูลผู้แทนโดยชอบธรรม/ผู้ปกครอง</p>
-          <div class="p-3 bg-secondary-subtle">
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <p class="col"><b>ผู้แทนโดยชอบธรรม/ผู้ปกครอง</b></p>
-                  <p class="col-12 col-md" id="Info_rightful_guardian">-</p>
-                </div>
-              </div>
-              <div class="col-12 col-md"></div>
-            </div>
-
-            <div v-show="show_other_info">
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>ชื่อ-นามสกุล</b></p>
-                    <p class="col-12 col-md" id="Info_other_fullname">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>เลขบัตรประชาชน</b></p>
-                    <p class="col-12 col-md" id="Info_other_citizenID">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col">
-                      <b>เบอร์โทรศัพท์เคลื่อนที่</b>
-                    </p>
-                    <p class="col-12 col-md" id="Info_other_phoneNumber">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>อีเมล</b></p>
-                    <p class="col-12 col-md" id="Info_other_email">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col"><b>อาชีพ</b></p>
-                    <p class="col-12 col-md" id="Info_other_job">-</p>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col"><b>มีรายได้บาท/ปี</b></p>
-                    <p class="col-12 col-md" id="Info_other_income">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col">
-                      <b>เอกสารรับรองรายได้ของผู้แทนโดยชอบธรรม/ผู้ปกครอง</b>
-                    </p>
-                    <div class="col-12 col-md" id="Info_other_file">
-                      <a
-                        :href="getFileUrl(otherFile)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        v-if="otherFile"
-                        ><p class="text-primary text-decoration-underline">
-                          คลิ๊กเพื่อดูไฟล์
-                        </p></a
-                      >
-                      <p v-else>-</p>
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>เลขบัตรประชาชน</b></p>
+                      <p class="col-12 col-md" id="Info_other_citizenID">-</p>
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md">
-                  <div class="row">
-                    <p class="col">
-                      <b>หนังสือรับรองการเป็นผู้อุปการะที่ไม่ใช่บิดา-มารดา</b>
-                    </p>
-                    <div class="col-12 col-md" id="Info_other_file">
-                      <a
-                        :href="getFileUrl(otherFile_certificate)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        v-if="otherFile_certificate"
-                        ><p class="text-primary text-decoration-underline">
-                          คลิ๊กเพื่อดูไฟล์
-                        </p></a
-                      >
-                      <p v-else>-</p>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col">
+                        <b>เบอร์โทรศัพท์เคลื่อนที่</b>
+                      </p>
+                      <p class="col-12 col-md" id="Info_other_phoneNumber">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>อีเมล</b></p>
+                      <p class="col-12 col-md" id="Info_other_email">-</p>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="row">
-                <div class="col">
-                  <div class="row">
-                    <p class="col-3"><b>ความสัมพันธ์</b></p>
-                    <p class="col-12 col-md" id="Info_other_relationship">-</p>
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col"><b>อาชีพ</b></p>
+                      <p class="col-12 col-md" id="Info_other_job">-</p>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col"><b>มีรายได้บาท/ปี</b></p>
+                      <p class="col-12 col-md" id="Info_other_income">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col">
+                        <b>เอกสารรับรองรายได้ของผู้แทนโดยชอบธรรม/ผู้ปกครอง</b>
+                      </p>
+                      <div class="col-12 col-md" id="Info_other_file">
+                        <a :href="getFileUrl(otherFile)" target="_blank" rel="noopener noreferrer" v-if="otherFile">
+                          <p class="text-primary text-decoration-underline">
+                            คลิ๊กเพื่อดูไฟล์
+                          </p>
+                        </a>
+                        <p v-else>-</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md">
+                    <div class="row">
+                      <p class="col">
+                        <b>หนังสือรับรองการเป็นผู้อุปการะที่ไม่ใช่บิดา-มารดา</b>
+                      </p>
+                      <div class="col-12 col-md" id="Info_other_file">
+                        <a :href="getFileUrl(otherFile_certificate)" target="_blank" rel="noopener noreferrer"
+                          v-if="otherFile_certificate">
+                          <p class="text-primary text-decoration-underline">
+                            คลิ๊กเพื่อดูไฟล์
+                          </p>
+                        </a>
+                        <p v-else>-</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="row">
+                      <p class="col-3"><b>ความสัมพันธ์</b></p>
+                      <p class="col-12 col-md" id="Info_other_relationship">-</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="float-end p-3">
-          <button class="btn btn-primary shadow" @click="confirmBoxWithValue">
-            เปลี่ยนสถานะคำข้อกู้
-          </button>
+          <div class="float-end p-3">
+            <button class="btn btn-primary shadow" @click="confirmBoxWithValue">
+              เปลี่ยนสถานะคำข้อกู้
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -788,8 +707,7 @@ export default {
       try {
         // Properly append the query string with a key
         const response = await fetch(
-          `${
-            process.env.VUE_APP_API_BASE_URL
+          `${process.env.VUE_APP_API_BASE_URL
           }/staff/get/loan/data?id=${encodeURIComponent(value)}`,
           {
             method: "GET",
@@ -955,8 +873,8 @@ export default {
         formData.dad_status === "มีชีวิตอยู่"
           ? "มีชีวิตอยู่"
           : formData.dad_status === "เสียชีวิต"
-          ? "เสียชีวิต"
-          : "ไม่ทราบ"
+            ? "เสียชีวิต"
+            : "ไม่ทราบ"
       );
 
       if (formData.dad_status === "มีชีวิตอยู่") {
@@ -982,8 +900,8 @@ export default {
         formData.mom_status === "มีชีวิตอยู่"
           ? "มีชีวิตอยู่"
           : formData.mom_status === "เสียชีวิต"
-          ? "เสียชีวิต"
-          : "ไม่ทราบ"
+            ? "เสียชีวิต"
+            : "ไม่ทราบ"
       );
 
       if (formData.mom_status === "มีชีวิตอยู่") {
@@ -1123,11 +1041,10 @@ export default {
           const htmlMessage = `
         <strong>📌 ผลการอัปเดตสถานะ</strong><br/>
         ${summaryLines.join("<br/>")}
-        ${
-          failureLines.length > 0
-            ? "<br/><br/><strong>❌ รายการที่ไม่สำเร็จ:</strong><br/>"
-            : ""
-        }
+        ${failureLines.length > 0
+              ? "<br/><br/><strong>❌ รายการที่ไม่สำเร็จ:</strong><br/>"
+              : ""
+            }
         ${failureLines.join("<br/>")}
       `;
 
@@ -1177,9 +1094,9 @@ export default {
     }
   },
 
-  beforeUnmount() {},
+  beforeUnmount() { },
 
-  watch() {},
+  watch() { },
 };
 </script>
 
@@ -1212,6 +1129,7 @@ h6 {
   min-height: 100%;
   padding: 5rem 20vw;
 }
+
 #floating-box {
   position: fixed;
   bottom: 20px;
@@ -1247,6 +1165,7 @@ h6 {
 #toggle-arrow {
   transition: transform 0.3s ease;
 }
+
 #toggle-arrow.rotated {
   transform: rotate(180deg);
 }
@@ -1257,11 +1176,13 @@ h6 {
   transition: all 0.3s ease;
   overflow: hidden;
 }
+
 .fold-enter-from,
 .fold-leave-to {
   max-height: 0;
   opacity: 0;
 }
+
 .fold-enter-to,
 .fold-leave-from {
   max-height: 500px;

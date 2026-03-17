@@ -1,4 +1,5 @@
 <template>
+  <div>
   <AlertBox ref="alertBox" />
   <div class="vh-100 img-background">
     <div
@@ -33,6 +34,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

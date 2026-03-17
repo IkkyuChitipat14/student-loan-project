@@ -1,46 +1,34 @@
 <template>
-  <AlertBox ref="alertBox" />
-  <div class="vh-100 img-background">
-    <div
-      class="d-flex flex-column justify-content-center align-items-center vh-100"
-    >
-      <!-- Login Box -->
-      <div
-        class="bg-white bg-opacity-75 my-auto rounded-4 shadow m-5 text-center"
-        style="max-width: 500px; max-height: 430px"
-      >
-        <div class="p-5">
-          <div>
-            <img src="../assets/mfu_icon.png" alt="mfu_icon" width="30px" />
-            <p class="Noto">มหาวิทยาลัยแม่ฟ้าหลวง</p>
-          </div>
-          <h3 class="mt-5">
-            <p class="Noto">
-              ระบบส่งแบบคำขอกู้ยืมเงินกองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)
-            </p>
-          </h3>
-          <div>
-            <div
-              class="row g-2 bg-light bg-opacity-75 rounded-3 shadow text-center p-3"
-            >
-              <GoogleLogin
-                :callback="callback"
-                class="d-flex justify-content-center align-items-center mb-2"
-              />
-              <p style="font-size: 10px; color: grey; margin: 0px" class="Noto">
-                เข้าสู่ระบบด้วยบัญชีนักศึกษาของมหาวิทยาลัยแม่ฟ้าหลวงเท่านั้น
+  <div>
+    <AlertBox ref="alertBox" />
+    <div class="vh-100 img-background">
+      <div class="d-flex flex-column justify-content-center align-items-center vh-100">
+        <!-- Login Box -->
+        <div class="bg-white bg-opacity-75 my-auto rounded-4 shadow m-5 text-center"
+          style="max-width: 500px; max-height: 430px">
+          <div class="p-5">
+            <div>
+              <img src="../assets/mfu_icon.png" alt="mfu_icon" width="30px" />
+              <p class="Noto">มหาวิทยาลัยแม่ฟ้าหลวง</p>
+            </div>
+            <h3 class="mt-5">
+              <p class="Noto">
+                ระบบส่งแบบคำขอกู้ยืมเงินกองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)
               </p>
+            </h3>
+            <div>
+              <div class="row g-2 bg-light bg-opacity-75 rounded-3 shadow text-center p-3">
+                <GoogleLogin :callback="callback" class="d-flex justify-content-center align-items-center mb-2" />
+                <p style="font-size: 10px; color: grey; margin: 0px" class="Noto">
+                  เข้าสู่ระบบด้วยบัญชีนักศึกษาของมหาวิทยาลัยแม่ฟ้าหลวงเท่านั้น
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="pb-3 pe-5 float-end">
-          <a
-            href="https://drive.google.com/file/d/1NRPcK26MyHBEds1grE1C42kH6qK8i7NE/view?usp=sharing"
-            class="Noto"
-            target="_blank"
-            rel="noopener noreferrer"
-            >คู่มือ/วิธีการใช้งานระบบ</a
-          >
+          <div class="pb-3 pe-5 float-end">
+            <a href="https://drive.google.com/file/d/1NRPcK26MyHBEds1grE1C42kH6qK8i7NE/view?usp=sharing" class="Noto"
+              target="_blank" rel="noopener noreferrer">คู่มือ/วิธีการใช้งานระบบ</a>
+          </div>
         </div>
       </div>
     </div>
@@ -153,16 +141,15 @@ export default {
 /* src/assets/css/fonts.css */
 @font-face {
   font-family: "Noto Sans Thai";
-  src: url("@/assets/fonts/Noto_Sans_Thai/NotoSansThai-VariableFont_wdth,wght.ttf")
-    format("truetype");
+  src: url("@/assets/fonts/Noto_Sans_Thai/NotoSansThai-VariableFont_wdth,wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
+
 .Noto {
   font-family: "Noto Sans Thai", sans-serif;
 }
 
-@media (max-width: 768px) {
-}
+@media (max-width: 768px) {}
 </style>
